@@ -1,0 +1,39 @@
+name: Gerador App Perfeito
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - name: 1️⃣ Baixar Codigo
+      uses: actions/checkout@v3
+
+    - name: 2️⃣ Instalar Java
+      uses: actions/setup-java@v3
+      with:
+        distribution: 'zulu'
+        java-version: '17'
+
+    - name: 3️⃣ Organizar Pastas para o Capacitor
+      run: |
+        mkdir -p www
+        cp index.html www/
+        npm install
+
+    - name: 4️⃣ Inicializar o Capacitor Android
+      run: |
+        npx capacitor init "Meu n8n Mobile" "com.meun8n.app" --web-dir=www
+        npx capacitor add android
+
+    - name: 5️⃣ Compilar o arquivo APK
+      run: |
+        cd android
+        ./gradlew assembleDebug
+
+    - name: 6️⃣ Enviar o APK Pronto para Download
+      uses: actions/upload-artifact@v4
+      with:
+        name: n8n-mobile-apk
+        path: android/app/build/outputs/apk/debug/app-debug.apk
