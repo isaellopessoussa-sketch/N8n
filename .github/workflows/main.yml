@@ -1,7 +1,6 @@
 name: Gerador App Perfeito
 
-on:
-  workflow_dispatch:
+on: [push]
 
 jobs:
   build:
